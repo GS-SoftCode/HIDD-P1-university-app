@@ -1,0 +1,108 @@
+// User Schema - Gestión de usuarios, estudiantes y roles
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator userClient {
+  provider = "prisma-client-js"
+  output   = "../generated/user-prisma"
+}
+
+datasource userDb {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  nombre    String
+  apellido  String
+  telefono  String?
+  roleId    String
+  role      Role     @relation(fields: [roleId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  estudiante Estudiante?
+  admin      Admin?
+
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  nombre      String   @unique
+  descripcion String?
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("roles")
+}
+
+model Estudiante {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  matricula   String   @unique
+  carreraId   String
+  carrera     Carrera  @relation(fields: [carreraId], references: [id])
+  cicloId     String
+  ciclo       Ciclo    @relation(fields: [cicloId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("estudiantes")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  nivel     String   // superadmin, admin, moderador
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model Carrera {
+  id          String       @id @default(cuid())
+  nombre      String       @unique
+  descripcion String?
+  duracion    Int          // duración en semestres
+  estudiantes Estudiante[]
+  materias    Materia[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("carreras")
+}
+
+model Ciclo {
+  id          String       @id @default(cuid())
+  nombre      String       @unique
+  anio        Int
+  periodo     String       // Ej: "2025-1", "2025-2"
+  fechaInicio DateTime
+  fechaFin    DateTime
+  activo      Boolean      @default(false)
+  estudiantes Estudiante[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("ciclos")
+}
+
+model Materia {
+  id          String   @id @default(cuid())
+  nombre      String
+  codigo      String   @unique
+  descripcion String?
+  creditos    Int
+  carreraId   String
+  carrera     Carrera  @relation(fields: [carreraId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("materias")
+}

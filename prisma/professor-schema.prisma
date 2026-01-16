@@ -1,0 +1,85 @@
+// Professor Schema - Gestión de docentes y asignaciones académicas
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator professorClient {
+  provider = "prisma-client-js"
+  output   = "../generated/professor-prisma"
+}
+
+datasource professorDb {
+  provider = "postgresql"
+}
+
+model Docente {
+  id              String            @id @default(cuid())
+  nombre          String
+  apellido        String
+  email           String            @unique
+  telefono        String?
+  cedula          String            @unique
+  especialidad    String
+  gradoAcademico  String            // Licenciatura, Maestría, Doctorado
+  fechaIngreso    DateTime
+  activo          Boolean           @default(true)
+  asignaciones    AsignacionDocente[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@map("docentes")
+}
+
+model AsignacionDocente {
+  id          String   @id @default(cuid())
+  docenteId   String
+  docente     Docente  @relation(fields: [docenteId], references: [id])
+  materiaId   String
+  cicloId     String
+  grupo       String   // Ej: "A", "B", "C"
+  horario     String   // JSON o String con información del horario
+  aula        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([docenteId, materiaId, cicloId, grupo])
+  @@map("asignaciones_docentes")
+}
+
+model Horario {
+  id          String   @id @default(cuid())
+  asignacionId String
+  diaSemana   Int      // 1-7 (Lunes a Domingo)
+  horaInicio  String   // Formato: "HH:MM"
+  horaFin     String   // Formato: "HH:MM"
+  aula        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("horarios")
+}
+
+model Evaluacion {
+  id          String   @id @default(cuid())
+  asignacionId String
+  tipo        String   // Examen, Parcial, Tarea, Proyecto
+  nombre      String
+  descripcion String?
+  fecha       DateTime
+  ponderacion Float    // Porcentaje de la nota final (0-100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("evaluaciones")
+}
+
+model Calificacion {
+  id           String   @id @default(cuid())
+  evaluacionId String
+  estudianteId String
+  nota         Float
+  observaciones String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([evaluacionId, estudianteId])
+  @@map("calificaciones")
+}
