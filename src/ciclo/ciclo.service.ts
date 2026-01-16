@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCicloDto } from './dto/create-ciclo.dto';
 import { UpdateCicloDto } from './dto/update-ciclo.dto';
+import { MainPrismaService } from '../prisma/main-prisma.service';
 
 @Injectable()
 export class CicloService {
-  create(createCicloDto: CreateCicloDto) {
-    return 'This action adds a new ciclo';
+  constructor(private readonly prisma: MainPrismaService) {}
+
+  async create(createCicloDto: CreateCicloDto) {
+    return await this.prisma.ciclo.create({
+      data: createCicloDto
+    });
   }
 
-  findAll() {
-    return `This action returns all ciclo`;
+  async findAll() {
+    return await this.prisma.ciclo.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ciclo`;
+  async findOne(id: number) {
+    const ciclo = await this.prisma.ciclo.findUnique({
+      where: { id_ciclo: id }
+    });
+    if (!ciclo) {
+      throw new NotFoundException(`Ciclo with ID ${id} not found`);
+    }
+    return ciclo;
   }
 
-  update(id: number, updateCicloDto: UpdateCicloDto) {
-    return `This action updates a #${id} ciclo`;
+  async update(id: number, updateCicloDto: UpdateCicloDto) {
+    const ciclo = await this.prisma.ciclo.update({
+      where: { id_ciclo: id },
+      data: updateCicloDto
+    });
+    return ciclo;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ciclo`;
+  async remove(id: number) {
+    const ciclo = await this.prisma.ciclo.delete({
+      where: { id_ciclo: id }
+    });
+    return ciclo;
   }
 }

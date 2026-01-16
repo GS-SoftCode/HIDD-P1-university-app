@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCarreraDto } from './dto/create-carrera.dto';
 import { UpdateCarreraDto } from './dto/update-carrera.dto';
+import { MainPrismaService } from '../prisma/main-prisma.service';
 
 @Injectable()
 export class CarreraService {
-  create(createCarreraDto: CreateCarreraDto) {
-    return 'This action adds a new carrera';
+  constructor(private readonly prisma: MainPrismaService) {}
+
+  async create(createCarreraDto: CreateCarreraDto) {
+    return await this.prisma.carrera.create({
+      data: createCarreraDto
+    });
   }
 
-  findAll() {
-    return `This action returns all carrera`;
+  async findAll() {
+    return await this.prisma.carrera.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} carrera`;
+  async findOne(id: number) {
+    const carrera = await this.prisma.carrera.findUnique({
+      where: { id_carrera: id }
+    });
+    if (!carrera) {
+      throw new NotFoundException(`Carrera with ID ${id} not found`);
+    }
+    return carrera;
   }
 
-  update(id: number, updateCarreraDto: UpdateCarreraDto) {
-    return `This action updates a #${id} carrera`;
+  async update(id: number, updateCarreraDto: UpdateCarreraDto) {
+    const carrera = await this.prisma.carrera.update({
+      where: { id_carrera: id },
+      data: updateCarreraDto
+    });
+    return carrera;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} carrera`;
+  async remove(id: number) {
+    const carrera = await this.prisma.carrera.delete({
+      where: { id_carrera: id }
+    });
+    return carrera;
   }
 }

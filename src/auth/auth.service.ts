@@ -1,26 +1,97 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { PrismaClient as UserPrismaClient } from '../../prisma/prisma-clients/user-client';
+import { UserLoginDto } from './dto/login.dto';
+import { UserRegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  private userPrisma = new UserPrismaClient();
+
+  constructor(private jwtService: JwtService) {}
+
+  async register(registerDto: UserRegisterDto) {
+    // Verificar si el usuario ya existe
+    const existingUser = await this.userPrisma.user.findUnique({
+      where: { correo: registerDto.correo },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('El correo ya está registrado');
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+
+    // Crear usuario
+    const user = await this.userPrisma.user.create({
+      data: {
+        nombre: registerDto.nombre,
+        apellido: registerDto.apellido,
+        correo: registerDto.correo,
+        password: hashedPassword,
+        roleId: registerDto.roleId,
+      },
+      include: {
+        role: true,
+      },
+    });
+
+    // Generar token
+    const payload = { sub: user.id, correo: user.correo, role: user.role.nombre };
+    const access_token = this.jwtService.sign(payload);
+
+    return {
+      access_token,
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        apellido: user.apellido,
+        correo: user.correo,
+        role: user.role.nombre,
+      },
+    };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async login(loginDto: UserLoginDto) {
+    // Buscar usuario
+    const user = await this.userPrisma.user.findUnique({
+      where: { correo: loginDto.correo },
+      include: { role: true },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    // Verificar password
+    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    // Generar token
+    const payload = { sub: user.id, correo: user.correo, role: user.role.nombre };
+    const access_token = this.jwtService.sign(payload);
+
+    return {
+      access_token,
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        apellido: user.apellido,
+        correo: user.correo,
+        role: user.role.nombre,
+      },
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async validateUser(userId: number) {
+    return await this.userPrisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
   }
 }

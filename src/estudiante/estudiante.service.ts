@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
+import { MainPrismaService } from '../prisma/main-prisma.service';
 
 @Injectable()
 export class EstudianteService {
-  create(createEstudianteDto: CreateEstudianteDto) {
-    return 'This action adds a new estudiante';
+  constructor(private readonly prisma: MainPrismaService) {}
+
+  async create(createEstudianteDto: CreateEstudianteDto) {
+    return await this.prisma.estudiante.create({
+      data: createEstudianteDto
+    });
   }
 
-  findAll() {
-    return `This action returns all estudiante`;
+  async findAll() {
+    return await this.prisma.estudiante.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} estudiante`;
+  async findOne(id: number) {
+    const estudiante = await this.prisma.estudiante.findUnique({
+      where: { id_estudiante: id }
+    });
+    if (!estudiante) {
+      throw new NotFoundException(`Estudiante with ID ${id} not found`);
+    }
+    return estudiante;
   }
 
-  update(id: number, updateEstudianteDto: UpdateEstudianteDto) {
-    return `This action updates a #${id} estudiante`;
+  async update(id: number, updateEstudianteDto: UpdateEstudianteDto) {
+    const estudiante = await this.prisma.estudiante.update({
+      where: { id_estudiante: id },
+      data: updateEstudianteDto
+    });
+    return estudiante;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} estudiante`;
+  async remove(id: number) {
+    const estudiante = await this.prisma.estudiante.delete({
+      where: { id_estudiante: id }
+    });
+    return estudiante;
   }
 }
