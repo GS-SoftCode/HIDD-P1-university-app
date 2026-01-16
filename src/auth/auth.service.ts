@@ -1,15 +1,16 @@
 import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { PrismaClient as UserPrismaClient } from '../../prisma/prisma-clients/user-client';
+import { UserPrismaService } from '../prisma/user-prisma.service';
 import { UserLoginDto } from './dto/login.dto';
 import { UserRegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
-  private userPrisma = new UserPrismaClient();
-
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private userPrisma: UserPrismaService,
+  ) {}
 
   async register(registerDto: UserRegisterDto) {
     // Verificar si el usuario ya existe
