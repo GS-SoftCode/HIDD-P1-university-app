@@ -9,7 +9,12 @@ export class EstudianteService {
 
   async create(createEstudianteDto: CreateEstudianteDto) {
     return await this.prisma.estudiante.create({
-      data: createEstudianteDto
+      data: {
+        userId: createEstudianteDto.userId,
+        fecha_nacimiento: createEstudianteDto.fecha_nacimiento,
+        id_carrera: createEstudianteDto.id_carrera,
+        estado: (createEstudianteDto.estado as any) || 'ACTIVO',
+      }
     });
   }
 
@@ -28,9 +33,19 @@ export class EstudianteService {
   }
 
   async update(id: number, updateEstudianteDto: UpdateEstudianteDto) {
+    const dataToUpdate: any = {};
+    
+    if (updateEstudianteDto.fecha_nacimiento !== undefined) {
+      dataToUpdate.fecha_nacimiento = updateEstudianteDto.fecha_nacimiento;
+    }
+    
+    if (updateEstudianteDto.estado !== undefined) {
+      dataToUpdate.estado = updateEstudianteDto.estado;
+    }
+    
     const estudiante = await this.prisma.estudiante.update({
       where: { id_estudiante: id },
-      data: updateEstudianteDto
+      data: dataToUpdate
     });
     return estudiante;
   }

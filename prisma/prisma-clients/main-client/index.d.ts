@@ -60,6 +60,25 @@ export type Docente_Materia = $Result.DefaultSelection<Prisma.$Docente_MateriaPa
 export type Estudiante_Materia = $Result.DefaultSelection<Prisma.$Estudiante_MateriaPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const EstadoEstudiante: {
+  Activo: 'Activo',
+  Inactivo: 'Inactivo',
+  Graduado: 'Graduado',
+  Retirado: 'Retirado'
+};
+
+export type EstadoEstudiante = (typeof EstadoEstudiante)[keyof typeof EstadoEstudiante]
+
+}
+
+export type EstadoEstudiante = $Enums.EstadoEstudiante
+
+export const EstadoEstudiante: typeof $Enums.EstadoEstudiante
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -3907,7 +3926,7 @@ export namespace Prisma {
     userId: number | null
     fecha_nacimiento: Date | null
     id_carrera: number | null
-    estado: string | null
+    estado: $Enums.EstadoEstudiante | null
   }
 
   export type EstudianteMaxAggregateOutputType = {
@@ -3915,7 +3934,7 @@ export namespace Prisma {
     userId: number | null
     fecha_nacimiento: Date | null
     id_carrera: number | null
-    estado: string | null
+    estado: $Enums.EstadoEstudiante | null
   }
 
   export type EstudianteCountAggregateOutputType = {
@@ -4056,7 +4075,7 @@ export namespace Prisma {
     userId: number
     fecha_nacimiento: Date
     id_carrera: number
-    estado: string
+    estado: $Enums.EstadoEstudiante
     _count: EstudianteCountAggregateOutputType | null
     _avg: EstudianteAvgAggregateOutputType | null
     _sum: EstudianteSumAggregateOutputType | null
@@ -4139,7 +4158,7 @@ export namespace Prisma {
       userId: number
       fecha_nacimiento: Date
       id_carrera: number
-      estado: string
+      estado: $Enums.EstadoEstudiante
     }, ExtArgs["result"]["estudiante"]>
     composites: {}
   }
@@ -4569,7 +4588,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"Estudiante", 'Int'>
     readonly fecha_nacimiento: FieldRef<"Estudiante", 'DateTime'>
     readonly id_carrera: FieldRef<"Estudiante", 'Int'>
-    readonly estado: FieldRef<"Estudiante", 'String'>
+    readonly estado: FieldRef<"Estudiante", 'EstadoEstudiante'>
   }
     
 
@@ -11870,6 +11889,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'EstadoEstudiante'
+   */
+  export type EnumEstadoEstudianteFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoEstudiante'>
+    
+
+
+  /**
+   * Reference to a field of type 'EstadoEstudiante[]'
+   */
+  export type ListEnumEstadoEstudianteFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoEstudiante[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -11987,7 +12020,7 @@ export namespace Prisma {
     userId?: IntFilter<"Estudiante"> | number
     fecha_nacimiento?: DateTimeFilter<"Estudiante"> | Date | string
     id_carrera?: IntFilter<"Estudiante"> | number
-    estado?: StringFilter<"Estudiante"> | string
+    estado?: EnumEstadoEstudianteFilter<"Estudiante"> | $Enums.EstadoEstudiante
     carrera?: XOR<CarreraScalarRelationFilter, CarreraWhereInput>
     materias?: Estudiante_MateriaListRelationFilter
   }
@@ -12010,7 +12043,7 @@ export namespace Prisma {
     NOT?: EstudianteWhereInput | EstudianteWhereInput[]
     fecha_nacimiento?: DateTimeFilter<"Estudiante"> | Date | string
     id_carrera?: IntFilter<"Estudiante"> | number
-    estado?: StringFilter<"Estudiante"> | string
+    estado?: EnumEstadoEstudianteFilter<"Estudiante"> | $Enums.EstadoEstudiante
     carrera?: XOR<CarreraScalarRelationFilter, CarreraWhereInput>
     materias?: Estudiante_MateriaListRelationFilter
   }, "id_estudiante" | "userId">
@@ -12036,7 +12069,7 @@ export namespace Prisma {
     userId?: IntWithAggregatesFilter<"Estudiante"> | number
     fecha_nacimiento?: DateTimeWithAggregatesFilter<"Estudiante"> | Date | string
     id_carrera?: IntWithAggregatesFilter<"Estudiante"> | number
-    estado?: StringWithAggregatesFilter<"Estudiante"> | string
+    estado?: EnumEstadoEstudianteWithAggregatesFilter<"Estudiante"> | $Enums.EstadoEstudiante
   }
 
   export type CarreraWhereInput = {
@@ -12453,7 +12486,7 @@ export namespace Prisma {
   export type EstudianteCreateInput = {
     userId: number
     fecha_nacimiento: Date | string
-    estado?: string
+    estado?: $Enums.EstadoEstudiante
     carrera: CarreraCreateNestedOneWithoutEstudiantesInput
     materias?: Estudiante_MateriaCreateNestedManyWithoutEstudianteInput
   }
@@ -12463,14 +12496,14 @@ export namespace Prisma {
     userId: number
     fecha_nacimiento: Date | string
     id_carrera: number
-    estado?: string
+    estado?: $Enums.EstadoEstudiante
     materias?: Estudiante_MateriaUncheckedCreateNestedManyWithoutEstudianteInput
   }
 
   export type EstudianteUpdateInput = {
     userId?: IntFieldUpdateOperationsInput | number
     fecha_nacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    estado?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoEstudianteFieldUpdateOperationsInput | $Enums.EstadoEstudiante
     carrera?: CarreraUpdateOneRequiredWithoutEstudiantesNestedInput
     materias?: Estudiante_MateriaUpdateManyWithoutEstudianteNestedInput
   }
@@ -12480,7 +12513,7 @@ export namespace Prisma {
     userId?: IntFieldUpdateOperationsInput | number
     fecha_nacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     id_carrera?: IntFieldUpdateOperationsInput | number
-    estado?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoEstudianteFieldUpdateOperationsInput | $Enums.EstadoEstudiante
     materias?: Estudiante_MateriaUncheckedUpdateManyWithoutEstudianteNestedInput
   }
 
@@ -12489,13 +12522,13 @@ export namespace Prisma {
     userId: number
     fecha_nacimiento: Date | string
     id_carrera: number
-    estado?: string
+    estado?: $Enums.EstadoEstudiante
   }
 
   export type EstudianteUpdateManyMutationInput = {
     userId?: IntFieldUpdateOperationsInput | number
     fecha_nacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    estado?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoEstudianteFieldUpdateOperationsInput | $Enums.EstadoEstudiante
   }
 
   export type EstudianteUncheckedUpdateManyInput = {
@@ -12503,7 +12536,7 @@ export namespace Prisma {
     userId?: IntFieldUpdateOperationsInput | number
     fecha_nacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     id_carrera?: IntFieldUpdateOperationsInput | number
-    estado?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoEstudianteFieldUpdateOperationsInput | $Enums.EstadoEstudiante
   }
 
   export type CarreraCreateInput = {
@@ -12936,6 +12969,13 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type EnumEstadoEstudianteFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoEstudiante | EnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoEstudiante[] | ListEnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoEstudiante[] | ListEnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoEstudianteFilter<$PrismaModel> | $Enums.EstadoEstudiante
+  }
+
   export type CarreraScalarRelationFilter = {
     is?: CarreraWhereInput
     isNot?: CarreraWhereInput
@@ -12999,6 +13039,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type EnumEstadoEstudianteWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoEstudiante | EnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoEstudiante[] | ListEnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoEstudiante[] | ListEnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoEstudianteWithAggregatesFilter<$PrismaModel> | $Enums.EstadoEstudiante
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEstadoEstudianteFilter<$PrismaModel>
+    _max?: NestedEnumEstadoEstudianteFilter<$PrismaModel>
   }
 
   export type CicloListRelationFilter = {
@@ -13346,6 +13396,10 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type EnumEstadoEstudianteFieldUpdateOperationsInput = {
+    set?: $Enums.EstadoEstudiante
   }
 
   export type CarreraUpdateOneRequiredWithoutEstudiantesNestedInput = {
@@ -13874,6 +13928,13 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedEnumEstadoEstudianteFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoEstudiante | EnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoEstudiante[] | ListEnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoEstudiante[] | ListEnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoEstudianteFilter<$PrismaModel> | $Enums.EstadoEstudiante
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -13886,6 +13947,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEstadoEstudianteWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EstadoEstudiante | EnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    in?: $Enums.EstadoEstudiante[] | ListEnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EstadoEstudiante[] | ListEnumEstadoEstudianteFieldRefInput<$PrismaModel>
+    not?: NestedEnumEstadoEstudianteWithAggregatesFilter<$PrismaModel> | $Enums.EstadoEstudiante
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEstadoEstudianteFilter<$PrismaModel>
+    _max?: NestedEnumEstadoEstudianteFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -14066,7 +14137,7 @@ export namespace Prisma {
   export type EstudianteCreateWithoutCarreraInput = {
     userId: number
     fecha_nacimiento: Date | string
-    estado?: string
+    estado?: $Enums.EstadoEstudiante
     materias?: Estudiante_MateriaCreateNestedManyWithoutEstudianteInput
   }
 
@@ -14074,7 +14145,7 @@ export namespace Prisma {
     id_estudiante?: number
     userId: number
     fecha_nacimiento: Date | string
-    estado?: string
+    estado?: $Enums.EstadoEstudiante
     materias?: Estudiante_MateriaUncheckedCreateNestedManyWithoutEstudianteInput
   }
 
@@ -14138,7 +14209,7 @@ export namespace Prisma {
     userId?: IntFilter<"Estudiante"> | number
     fecha_nacimiento?: DateTimeFilter<"Estudiante"> | Date | string
     id_carrera?: IntFilter<"Estudiante"> | number
-    estado?: StringFilter<"Estudiante"> | string
+    estado?: EnumEstadoEstudianteFilter<"Estudiante"> | $Enums.EstadoEstudiante
   }
 
   export type Docente_MateriaCreateWithoutPeriodoInput = {
@@ -14564,7 +14635,7 @@ export namespace Prisma {
   export type EstudianteCreateWithoutMateriasInput = {
     userId: number
     fecha_nacimiento: Date | string
-    estado?: string
+    estado?: $Enums.EstadoEstudiante
     carrera: CarreraCreateNestedOneWithoutEstudiantesInput
   }
 
@@ -14573,7 +14644,7 @@ export namespace Prisma {
     userId: number
     fecha_nacimiento: Date | string
     id_carrera: number
-    estado?: string
+    estado?: $Enums.EstadoEstudiante
   }
 
   export type EstudianteCreateOrConnectWithoutMateriasInput = {
@@ -14635,7 +14706,7 @@ export namespace Prisma {
   export type EstudianteUpdateWithoutMateriasInput = {
     userId?: IntFieldUpdateOperationsInput | number
     fecha_nacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    estado?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoEstudianteFieldUpdateOperationsInput | $Enums.EstadoEstudiante
     carrera?: CarreraUpdateOneRequiredWithoutEstudiantesNestedInput
   }
 
@@ -14644,7 +14715,7 @@ export namespace Prisma {
     userId?: IntFieldUpdateOperationsInput | number
     fecha_nacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
     id_carrera?: IntFieldUpdateOperationsInput | number
-    estado?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoEstudianteFieldUpdateOperationsInput | $Enums.EstadoEstudiante
   }
 
   export type MateriaUpsertWithoutEstudiantesInput = {
@@ -14753,7 +14824,7 @@ export namespace Prisma {
     id_estudiante?: number
     userId: number
     fecha_nacimiento: Date | string
-    estado?: string
+    estado?: $Enums.EstadoEstudiante
   }
 
   export type CicloUpdateWithoutCarreraInput = {
@@ -14778,7 +14849,7 @@ export namespace Prisma {
   export type EstudianteUpdateWithoutCarreraInput = {
     userId?: IntFieldUpdateOperationsInput | number
     fecha_nacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    estado?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoEstudianteFieldUpdateOperationsInput | $Enums.EstadoEstudiante
     materias?: Estudiante_MateriaUpdateManyWithoutEstudianteNestedInput
   }
 
@@ -14786,7 +14857,7 @@ export namespace Prisma {
     id_estudiante?: IntFieldUpdateOperationsInput | number
     userId?: IntFieldUpdateOperationsInput | number
     fecha_nacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    estado?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoEstudianteFieldUpdateOperationsInput | $Enums.EstadoEstudiante
     materias?: Estudiante_MateriaUncheckedUpdateManyWithoutEstudianteNestedInput
   }
 
@@ -14794,7 +14865,7 @@ export namespace Prisma {
     id_estudiante?: IntFieldUpdateOperationsInput | number
     userId?: IntFieldUpdateOperationsInput | number
     fecha_nacimiento?: DateTimeFieldUpdateOperationsInput | Date | string
-    estado?: StringFieldUpdateOperationsInput | string
+    estado?: EnumEstadoEstudianteFieldUpdateOperationsInput | $Enums.EstadoEstudiante
   }
 
   export type Docente_MateriaCreateManyPeriodoInput = {

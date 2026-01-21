@@ -189,7 +189,12 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
-
+exports.EstadoEstudiante = exports.$Enums.EstadoEstudiante = {
+  Activo: 'Activo',
+  Inactivo: 'Inactivo',
+  Graduado: 'Graduado',
+  Retirado: 'Retirado'
+};
 
 exports.Prisma.ModelName = {
   Admin: 'Admin',

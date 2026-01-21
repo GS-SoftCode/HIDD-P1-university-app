@@ -7,22 +7,19 @@ datasource db_user {
   provider = "postgresql"
 }
 
-model Role {
-  id        Int      @id @default(autoincrement())
-  nombre    String   @unique // admin, docente, estudiante
-  users     User[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model User {
   id        Int      @id @default(autoincrement())
   nombre    String
   apellido  String
   correo    String   @unique
   password  String
-  roleId    Int
-  role      Role     @relation(fields: [roleId], references: [id])
+  rol       Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+  enum Role {
+    ADMIN
+    DOCENTE
+    ESTUDIANTE
+  }

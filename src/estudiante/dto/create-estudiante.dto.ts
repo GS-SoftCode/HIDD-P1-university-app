@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsDateString, IsString, IsOptional } from 'class-validator';
+import { IsInt, IsNotEmpty, IsDateString, IsEnum, IsOptional } from 'class-validator';
 
 export class CreateEstudianteDto {
   @IsInt()
@@ -7,13 +7,13 @@ export class CreateEstudianteDto {
 
   @IsDateString()
   @IsNotEmpty()
-  fecha_nacimiento: string;
+  fecha_nacimiento: Date;
 
   @IsInt()
   @IsNotEmpty()
   id_carrera: number;
 
-  @IsString()
+  @IsEnum(['ACTIVO', 'INACTIVO', 'GRADUADO', 'RETIRADO'])
   @IsOptional()
-  estado?: string;
+  estado?: 'ACTIVO' | 'INACTIVO' | 'GRADUADO' | 'RETIRADO';
 }

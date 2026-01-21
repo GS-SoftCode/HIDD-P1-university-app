@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "EstadoEstudiante" AS ENUM ('Activo', 'Inactivo', 'Graduado', 'Retirado');
+
 -- CreateTable
 CREATE TABLE "Admin" (
     "id_admin" SERIAL NOT NULL,
@@ -21,7 +24,7 @@ CREATE TABLE "Estudiante" (
     "userId" INTEGER NOT NULL,
     "fecha_nacimiento" TIMESTAMP(3) NOT NULL,
     "id_carrera" INTEGER NOT NULL,
-    "estado" TEXT NOT NULL DEFAULT 'activo',
+    "estado" "EstadoEstudiante" NOT NULL DEFAULT 'Activo',
 
     CONSTRAINT "Estudiante_pkey" PRIMARY KEY ("id_estudiante")
 );
