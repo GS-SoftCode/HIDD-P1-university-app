@@ -32,6 +32,72 @@ export class EstudianteService {
     return estudiante;
   }
 
+  async findMatriculasByPeriodo(id_estudiante: number, id_periodo: number) {
+    return await this.prisma.estudiante_Materia.findMany({
+      where: {
+        id_estudiante,
+        id_periodo
+      },
+      include: {
+        materia: {
+          include: {
+            ciclo: true
+          }
+        },
+        periodo: true
+      }
+    });
+  }
+
+  async findEstudiantesFiltrados(id_carrera: number, id_periodo: number) {
+    return await this.prisma.estudiante.findMany({
+      where: {
+        AND: [
+          { estado: 'Activo' },
+          { id_carrera },
+          {
+            materias: {
+              some: {
+                id_periodo
+              }
+            }
+          }
+        ]
+      },
+      include: {
+        carrera: true,
+        materias: {
+          where: {
+            id_periodo
+          },
+          include: {
+            materia: true
+          }
+        }
+      }
+    });
+  }
+
+  async getReporte() {
+    const resultado: any[] = await this.prisma.$queryRaw`
+      SELECT 
+        e.id_estudiante,
+        e."userId",
+        c.nombre AS carrera,
+        COUNT(em.id_materia) AS total_materias
+      FROM "Estudiante" e
+      INNER JOIN "Carrera" c ON e.id_carrera = c.id_carrera
+      LEFT JOIN "Estudiante_Materia" em ON e.id_estudiante = em.id_estudiante
+      GROUP BY e.id_estudiante, e."userId", c.nombre
+      ORDER BY total_materias DESC
+    `;
+    
+    return resultado.map((row: any) => ({
+      ...row,
+      total_materias: Number(row.total_materias)
+    }));
+  }
+
   async update(id: number, updateEstudianteDto: UpdateEstudianteDto) {
     const dataToUpdate: any = {};
     

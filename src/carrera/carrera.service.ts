@@ -27,6 +27,25 @@ export class CarreraService {
     return carrera;
   }
 
+  async findMateriasByCarreraId(id: number) {
+    const carrera = await this.prisma.carrera.findUnique({
+      where: { id_carrera: id },
+      include: {
+        ciclos: {
+          include: {
+            materias: true
+          }
+        }
+      }
+    });
+    
+    if (!carrera) {
+      throw new NotFoundException(`Carrera with ID ${id} not found`);
+    }
+    
+    return carrera;
+  }
+
   async update(id: number, updateCarreraDto: UpdateCarreraDto) {
     const carrera = await this.prisma.carrera.update({
       where: { id_carrera: id },

@@ -22,6 +22,11 @@ export class CarreraController {
     return this.carreraService.findOne(+id);
   }
 
+  @Get(':id/filter-materias-carrera')
+  findMateriasByCarreraId(@Param('id') id: number) {
+    return this.carreraService.findMateriasByCarreraId(Number(id));
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCarreraDto: UpdateCarreraDto) {
     return this.carreraService.update(+id, updateCarreraDto);

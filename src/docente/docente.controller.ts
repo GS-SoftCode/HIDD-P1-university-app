@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { DocenteService } from './docente.service';
 import { CreateDocenteDto } from './dto/create-docente.dto';
 import { UpdateDocenteDto } from './dto/update-docente.dto';
@@ -17,6 +17,16 @@ export class DocenteController {
   @Get()
   findAll() {
     return this.docenteService.findAll();
+  }
+
+  @Get('filter-multiples-materias')
+  findDocentesMultiMaterias() {
+    return this.docenteService.findDocentesMultiMaterias();
+  }
+
+  @Get('filter')
+  findDocentesFiltrados(@Query('especialidad') especialidad?: string) {
+    return this.docenteService.findDocentesFiltrados(especialidad);
   }
 
   @Get(':id')

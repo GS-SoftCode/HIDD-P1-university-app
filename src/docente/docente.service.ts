@@ -26,6 +26,62 @@ export class DocenteService {
     }
     return docente;
   }
+  
+  async findDocentesMultiMaterias() {
+    const docentes = await this.prisma.docente.findMany({
+      include: {
+        materias: {
+          include: {
+            materia: true,
+            periodo: true
+          }
+        }
+      }
+    });
+
+    // Filtramos solo los docentes que tienen más de una materia
+    const docentesConMultiplesMaterias = docentes.filter(docente => {
+      // Contamos materias únicas (sin repetir por periodo)
+      const materiasUnicas = new Set(docente.materias.map(dm => dm.id_materia));
+      return materiasUnicas.size > 1;
+    });
+
+    return docentesConMultiplesMaterias;
+  }
+
+  async findDocentesFiltrados(especialidad?: string) {
+    return await this.prisma.docente.findMany({
+      where: {
+        AND: [
+          {
+            OR: [
+              { especialidad: especialidad || 'Ingeniería' },
+              {
+                materias: {
+                  some: {}  // Que dicten al menos una materia
+                }
+              }
+            ]
+          },
+          {
+            NOT: {
+              materias: {
+                none: {}  // NOT (que NO tenga materias) = que sí tenga materias
+              }
+            }
+          }
+        ]
+      },
+      include: {
+        materias: {
+          include: {
+            materia: true,
+            periodo: true
+          }
+        }
+      }
+    });
+  }
 
   async update(id: number, updateDocenteDto: UpdateDocenteDto) {
     const docente = await this.prisma.docente.update({

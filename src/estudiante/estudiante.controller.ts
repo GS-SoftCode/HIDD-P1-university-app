@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { EstudianteService } from './estudiante.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
@@ -17,6 +17,27 @@ export class EstudianteController {
   @Get()
   findAll() {
     return this.estudianteService.findAll();
+  }
+
+  @Get('matriculas')
+  findMatriculasByPeriodo(
+    @Query('id_estudiante') id_estudiante: number,
+    @Query('id_periodo') id_periodo: number
+  ) {
+    return this.estudianteService.findMatriculasByPeriodo(Number(id_estudiante), Number(id_periodo));
+  }
+
+  @Get('filter-carrera-periodo')
+  findEstudiantesFiltrados(
+    @Query('id_carrera') id_carrera: number,
+    @Query('id_periodo') id_periodo: number
+  ) {
+    return this.estudianteService.findEstudiantesFiltrados(Number(id_carrera), Number(id_periodo));
+  }
+
+  @Get('reporte-estudiantes')
+  getReporte() {
+    return this.estudianteService.getReporte();
   }
 
   @Get(':id')

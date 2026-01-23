@@ -10,6 +10,9 @@ import { MateriaModule } from './materia/materia.module';
 import { AdminModule } from './admin/admin.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
+import { EstudianteMateriaModule } from './estudiante-materia/estudiante-materia.module';
+import { DocenteMateriaModule } from './docente-materia/docente-materia.module';
+import { PeriodoModule } from './periodo/periodo.module';
 
 @Module({
   imports: [
@@ -17,7 +20,7 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
       envFilePath: ".env",
     }),
-    AuthModule, CarreraModule, CicloModule, DocenteModule, EstudianteModule, MateriaModule, AdminModule, UserModule],
+    AuthModule, CarreraModule, CicloModule, DocenteModule, EstudianteModule, MateriaModule, AdminModule, UserModule, EstudianteMateriaModule, DocenteMateriaModule, PeriodoModule],
   controllers: [AppController],
   providers: [AppService],
 })
