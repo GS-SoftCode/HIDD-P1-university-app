@@ -21,6 +21,6 @@ export class RegisterEstudianteDto {
   id_carrera: number;
 
   @IsOptional()
-  @IsEnum(['ACTIVO', 'INACTIVO', 'GRADUADO', 'RETIRADO'])
+  @IsEnum(['Activo', 'Inactivo', 'Graduado', 'Retirado'])
   estado?: string;
 }

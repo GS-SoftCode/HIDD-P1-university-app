@@ -37,12 +37,17 @@ export class UserService {
     return result;
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const users = await this.userPrisma.user.findMany();
+    // Excluir el campo password de cada usuario
+    return users.map(({ password, ...rest }) => rest);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    const user = await this.userPrisma.user.findUnique({ where: { id } });
+    if (!user) return null;
+    const { password, ...rest } = user;
+    return rest;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

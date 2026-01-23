@@ -202,9 +202,9 @@ export class AuthService {
         const estudiante = await this.mainPrisma.estudiante.create({
           data: {
             userId: user.id,
-            fecha_nacimiento: dto.fecha_nacimiento,
+            fecha_nacimiento: new Date(dto.fecha_nacimiento),
             id_carrera: dto.id_carrera,
-            estado: (dto.estado as any) || 'ACTIVO',
+            estado: dto.estado ? (dto.estado.charAt(0).toUpperCase() + dto.estado.slice(1).toLowerCase() as any) : 'Activo',
           },
         });
 
