@@ -39,9 +39,7 @@ export class DocenteService {
       }
     });
 
-    // Filtramos solo los docentes que tienen más de una materia
     const docentesConMultiplesMaterias = docentes.filter(docente => {
-      // Contamos materias únicas (sin repetir por periodo)
       const materiasUnicas = new Set(docente.materias.map(dm => dm.id_materia));
       return materiasUnicas.size > 1;
     });
@@ -58,7 +56,7 @@ export class DocenteService {
               { especialidad: especialidad || 'Ingeniería' },
               {
                 materias: {
-                  some: {}  // Que dicten al menos una materia
+                  some: {}
                 }
               }
             ]
@@ -66,7 +64,7 @@ export class DocenteService {
           {
             NOT: {
               materias: {
-                none: {}  // NOT (que NO tenga materias) = que sí tenga materias
+                none: {}
               }
             }
           }

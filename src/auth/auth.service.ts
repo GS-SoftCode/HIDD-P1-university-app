@@ -17,7 +17,6 @@ export class AuthService {
   ) {}
 
   async login(loginDto: UserLoginDto) {
-    // Buscar usuario
     const user = await this.userPrisma.user.findUnique({
       where: { correo: loginDto.correo },
     });
@@ -26,14 +25,12 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    // Verificar password
     const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    // Generar token
     const payload = { sub: user.id, correo: user.correo, role: user.rol };
     const access_token = this.jwtService.sign(payload);
 
@@ -50,7 +47,6 @@ export class AuthService {
   }
 
   async registerAdmin(dto: RegisterAdminDto) {
-    // Verificar si el usuario ya existe
     const existingUser = await this.userPrisma.user.findUnique({
       where: { correo: dto.correo },
     });
@@ -59,13 +55,10 @@ export class AuthService {
       throw new ConflictException('El correo ya está registrado');
     }
 
-    // Hash del password
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    // Transacción: crear usuario Y admin
     try {
       return await this.userPrisma.$transaction(async (tx) => {
-        // Crear usuario en db_user
         const user = await tx.user.create({
           data: {
             nombre: dto.nombre,
@@ -76,14 +69,12 @@ export class AuthService {
           },
         });
 
-        // Crear admin en db_main
         const admin = await this.mainPrisma.admin.create({
           data: {
             userId: user.id,
           },
         });
 
-        // Generar token
         const payload = { sub: user.id, correo: user.correo, role: user.rol };
         const access_token = this.jwtService.sign(payload);
 
@@ -100,13 +91,11 @@ export class AuthService {
         };
       });
     } catch (error) {
-      // Si falla la creación en main-schema, la transacción revertirá automáticamente el User
       throw new ConflictException('Error al crear el administrador: ' + error.message);
     }
   }
 
   async registerDocente(dto: RegisterDocenteDto) {
-    // Verificar si el usuario ya existe
     const existingUser = await this.userPrisma.user.findUnique({
       where: { correo: dto.correo },
     });
@@ -115,13 +104,10 @@ export class AuthService {
       throw new ConflictException('El correo ya está registrado');
     }
 
-    // Hash del password
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    // Transacción: crear usuario Y docente
     try {
       return await this.userPrisma.$transaction(async (tx) => {
-        // Crear usuario en db_user
         const user = await tx.user.create({
           data: {
             nombre: dto.nombre,
@@ -132,7 +118,6 @@ export class AuthService {
           },
         });
 
-        // Crear docente en db_main
         const docente = await this.mainPrisma.docente.create({
           data: {
             userId: user.id,
@@ -140,7 +125,6 @@ export class AuthService {
           },
         });
 
-        // Generar token
         const payload = { sub: user.id, correo: user.correo, role: user.rol };
         const access_token = this.jwtService.sign(payload);
 
@@ -157,13 +141,11 @@ export class AuthService {
         };
       });
     } catch (error) {
-      // Si falla la creación en main-schema, la transacción revertirá automáticamente el User
       throw new ConflictException('Error al crear el docente: ' + error.message);
     }
   }
 
   async registerEstudiante(dto: RegisterEstudianteDto) {
-    // Verificar si el usuario ya existe
     const existingUser = await this.userPrisma.user.findUnique({
       where: { correo: dto.correo },
     });
@@ -172,7 +154,6 @@ export class AuthService {
       throw new ConflictException('El correo ya está registrado');
     }
 
-    // Validar que la carrera existe
     const carrera = await this.mainPrisma.carrera.findUnique({
       where: { id_carrera: dto.id_carrera },
     });
@@ -181,13 +162,10 @@ export class AuthService {
       throw new NotFoundException('La carrera especificada no existe');
     }
 
-    // Hash del password
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    // Transacción: crear usuario Y estudiante
     try {
       return await this.userPrisma.$transaction(async (tx) => {
-        // Crear usuario en db_user
         const user = await tx.user.create({
           data: {
             nombre: dto.nombre,
@@ -198,7 +176,6 @@ export class AuthService {
           },
         });
 
-        // Crear estudiante en db_main
         const estudiante = await this.mainPrisma.estudiante.create({
           data: {
             userId: user.id,
@@ -208,7 +185,6 @@ export class AuthService {
           },
         });
 
-        // Generar token
         const payload = { sub: user.id, correo: user.correo, role: user.rol };
         const access_token = this.jwtService.sign(payload);
 
@@ -225,7 +201,6 @@ export class AuthService {
         };
       });
     } catch (error) {
-      // Si falla la creación en main-schema, la transacción revertirá automáticamente el User
       throw new ConflictException('Error al crear el estudiante: ' + error.message);
     }
   }

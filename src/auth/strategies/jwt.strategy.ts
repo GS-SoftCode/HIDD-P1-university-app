@@ -26,7 +26,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
-    // Retornar propiedades compatibles con el guard de roles
     return { id: user.id, correo: user.correo, role: user.rol };
   }
 }

@@ -45,7 +45,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Body() _body: any, @GetUser() user: any) {
-    // Devuelve el usuario autenticado extraído del request
     return user;
   }
 }

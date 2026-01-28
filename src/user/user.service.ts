@@ -9,7 +9,6 @@ export class UserService {
   constructor(private userPrisma: UserPrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
-    // Verificar si el usuario ya existe
     const existingUser = await this.userPrisma.user.findUnique({
       where: { correo: createUserDto.correo },
     });
@@ -18,28 +17,24 @@ export class UserService {
       throw new ConflictException('El correo ya está registrado');
     }
 
-    // Hash del password
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    // Crear usuario
     const user = await this.userPrisma.user.create({
       data: {
         nombre: createUserDto.nombre,
         apellido: createUserDto.apellido,
         correo: createUserDto.correo,
         password: hashedPassword,
-        rol: createUserDto.rol || 'ESTUDIANTE', // Por defecto ESTUDIANTE
+        rol: createUserDto.rol || 'ESTUDIANTE',
       },
     });
 
-    // Retornar sin el password
     const { password, ...result } = user;
     return result;
   }
 
   async findAll() {
     const users = await this.userPrisma.user.findMany();
-    // Excluir el campo password de cada usuario
     return users.map(({ password, ...rest }) => rest);
   }
 
